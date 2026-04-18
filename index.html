@@ -1,0 +1,1832 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bad Boy Boxing</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;700&display=swap");
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --gold: #94471d;
+        --gold2: #e8c96a;
+        --red: #b22222;
+        --dark: #080808;
+        --d2: #0f0f0f;
+        --d3: #161616;
+        --d4: #1e1e1e;
+        --text: #f5f0e8;
+        --muted: #c5ad9a;
+        --border: rgba(155, 130, 62, 0.861);
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--dark);
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        overflow-x: hidden;
+        cursor: none;
+      }
+
+      #cursor {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        background: var(--gold);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.2s,
+          height 0.2s,
+          opacity 0.2s;
+        mix-blend-mode: difference;
+      }
+      #cursor-ring {
+        position: fixed;
+        width: 48px;
+        height: 48px;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+        transition:
+          transform 0.08s,
+          width 0.2s,
+          height 0.2s;
+        opacity: 1;
+        background: url("./assets/cursor.png") no-repeat center;
+        background-size: contain;
+        border: none;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 500;
+        height: 70px;
+        padding: 0 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(8, 8, 8, 0.85);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(155, 130, 62, 0.2);
+      }
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+      }
+      .nav-links a {
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: rgba(245, 240, 232, 0.4);
+        transition: color 0.3s;
+        font-weight: 500;
+      }
+      .nav-links a:hover {
+        color: var(--gold);
+      }
+      .nav-cta {
+        background: transparent;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        font-size: 0.65rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-weight: 700;
+        padding: 0.6rem 1.6rem;
+        transition: all 0.3s;
+        cursor: none;
+      }
+      .nav-cta:hover {
+        background: var(--gold);
+        color: var(--dark);
+      }
+
+      .hero {
+        height: 100vh;
+        padding-top: 70px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: rgba(8, 8, 8, 0.55);
+        z-index: 1;
+      }
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+        opacity: 0.4;
+        pointer-events: none;
+        animation: grain 8s steps(10) infinite;
+        z-index: 0;
+      }
+      @keyframes grain {
+        0%,
+        100% {
+          transform: translate(0, 0);
+        }
+        10% {
+          transform: translate(-2%, -3%);
+        }
+        20% {
+          transform: translate(3%, 1%);
+        }
+        30% {
+          transform: translate(-1%, 4%);
+        }
+        40% {
+          transform: translate(4%, -2%);
+        }
+        50% {
+          transform: translate(-3%, 3%);
+        }
+        60% {
+          transform: translate(2%, -4%);
+        }
+        70% {
+          transform: translate(-4%, 2%);
+        }
+        80% {
+          transform: translate(3%, -1%);
+        }
+        90% {
+          transform: translate(-2%, 4%);
+        }
+      }
+      .hero-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
+      }
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+      .hero-circle {
+        position: absolute;
+        border-radius: 50%;
+        animation: pulse 4s ease-in-out infinite alternate;
+      }
+      .hc1 {
+        width: 700px;
+        height: 700px;
+        right: -150px;
+        top: -150px;
+        background: radial-gradient(
+          circle,
+          rgba(178, 34, 34, 0.18) 0%,
+          transparent 70%
+        );
+      }
+      .hc2 {
+        width: 500px;
+        height: 500px;
+        left: 30%;
+        bottom: -100px;
+        background: radial-gradient(
+          circle,
+          rgba(201, 168, 76, 0.1) 0%,
+          transparent 70%
+        );
+        animation-delay: 2s;
+      }
+      @keyframes pulse {
+        from {
+          transform: scale(1) rotate(0deg);
+        }
+        to {
+          transform: scale(1.1) rotate(5deg);
+        }
+      }
+      .hero-line {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          var(--gold),
+          transparent
+        );
+        opacity: 0.2;
+        z-index: 1;
+      }
+      .hl1 {
+        left: 20%;
+      }
+      .hl2 {
+        left: 40%;
+      }
+      .hl3 {
+        left: 60%;
+      }
+      .hl4 {
+        left: 80%;
+      }
+      .hero-big-text {
+        position: absolute;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(160px, 22vw, 320px);
+        line-height: 0.85;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(201, 168, 76, 0.08);
+        letter-spacing: -5px;
+        white-space: nowrap;
+        pointer-events: none;
+        user-select: none;
+        z-index: 1;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        padding: 0 2rem;
+      }
+      .hero-eyebrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .eyebrow-line {
+        width: 40px;
+        height: 1px;
+        background: var(--gold);
+      }
+      .eyebrow-text {
+        font-size: 0.65rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--gold);
+        font-weight: 500;
+      }
+      .hero h1 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(4rem, 11vw, 10rem);
+        line-height: 0.9;
+        letter-spacing: -2px;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      .hero h1 em {
+        color: var(--gold);
+        font-style: normal;
+        display: block;
+      }
+      .hero-desc {
+        font-size: 1rem;
+        color: rgba(245, 240, 232, 0.45);
+        line-height: 1.5;
+        max-width: 420px;
+        margin: 0 auto 1rem;
+        font-weight: 300;
+      }
+      .hero-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+      }
+      .btn-gold {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--gold);
+        color: var(--dark);
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        font-weight: 700;
+        padding: 0.9rem 2rem;
+        transition: all 0.3s;
+        cursor: none;
+      }
+      .btn-gold:hover {
+        background: var(--gold2);
+      }
+      .btn-ghost-text {
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: rgba(245, 240, 232, 0.4);
+        transition: color 0.3s;
+        cursor: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.9rem 2rem;
+      }
+      .btn-ghost-text:hover {
+        color: var(--text);
+      }
+      .arrow-icon {
+        width: 20px;
+        height: 20px;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.6rem;
+      }
+      .hero-scroll {
+        position: absolute;
+        right: 3rem;
+        bottom: 2rem;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        opacity: 0.3;
+      }
+      .scroll-line {
+        width: 1px;
+        height: 60px;
+        background: var(--text);
+        animation: scrollLine 2s ease-in-out infinite;
+      }
+      @keyframes scrollLine {
+        0% {
+          transform: scaleY(0);
+          transform-origin: top;
+        }
+        50% {
+          transform: scaleY(1);
+          transform-origin: top;
+        }
+        51% {
+          transform: scaleY(1);
+          transform-origin: bottom;
+        }
+        100% {
+          transform: scaleY(0);
+          transform-origin: bottom;
+        }
+      }
+      .scroll-text {
+        font-size: 0.55rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        writing-mode: vertical-rl;
+        color: var(--text);
+      }
+
+      .hero-stats-bar {
+        display: flex;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        background: var(--d2);
+      }
+      .stat-cell {
+        flex: 1;
+        padding: 2rem 2.5rem;
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .stat-cell:last-child {
+        border-right: none;
+      }
+      .s-num {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.5rem;
+        color: var(--gold);
+        line-height: 1;
+      }
+      .s-label {
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .marquee-wrap {
+        overflow: hidden;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        padding: 0.9rem 0;
+        background: var(--d2);
+      }
+      .marquee-track {
+        display: flex;
+        gap: 3rem;
+        animation: marquee 18s linear infinite;
+        width: max-content;
+      }
+      .marquee-item {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 4px;
+        color: var(--muted);
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+      }
+      .marquee-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--gold);
+        flex-shrink: 0;
+      }
+      @keyframes marquee {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ABOUT */
+      .about {
+        padding: 10rem 3rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        align-items: stretch;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .about-left {
+        padding-right: 5rem;
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .about-right {
+        padding-left: 5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .label-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+      }
+      .label-tag-line {
+        width: 30px;
+        height: 1px;
+        background: var(--gold);
+      }
+      .label-tag-text {
+        font-size: 0.6rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--gold);
+        font-weight: 500;
+      }
+      .about h2 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(3.5rem, 6vw, 5.5rem);
+        line-height: 0.95;
+        margin-bottom: 2rem;
+        letter-spacing: -1px;
+      }
+      .about h2 em {
+        color: var(--gold);
+        font-style: normal;
+      }
+      .about p {
+        font-size: 0.95rem;
+        color: rgba(245, 240, 232, 0.45);
+        line-height: 1.9;
+        margin-bottom: 1rem;
+        font-weight: 300;
+      }
+
+      /* ── TRAINER PHOTO ── */
+      .about-visual-block {
+        position: relative;
+        border: 1px solid var(--border);
+        overflow: hidden;
+        aspect-ratio: 4/5;
+        margin-bottom: 2rem;
+      }
+      .avb-bg {
+        position: absolute;
+        inset: 0;
+        background: url("./assets/trainer.png") center center / cover no-repeat;
+      }
+      /* gradient so name plate stays readable */
+      .avb-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(8, 8, 8, 0.85) 0%,
+          transparent 55%
+        );
+      }
+      .avb-label {
+        position: absolute;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        right: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        z-index: 1;
+      }
+      .avb-name {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+        color: var(--text);
+      }
+      .avb-title {
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+
+      .credentials {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        background: var(--border);
+        margin-top: auto;
+      }
+      .cred-item {
+        background: var(--dark);
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .cred-num {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2rem;
+        color: var(--gold);
+      }
+      .cred-text {
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* CLASSES */
+      .classes-section {
+        padding: 8rem 3rem;
+        background: var(--d2);
+        max-width: 100%;
+      }
+      .classes-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .classes-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 5rem;
+      }
+      .classes-header-left h2 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(3rem, 6vw, 5rem);
+        line-height: 0.9;
+        letter-spacing: -1px;
+      }
+      .classes-header-left h2 em {
+        color: var(--gold);
+        font-style: normal;
+      }
+      .classes-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .class-row {
+        display: grid;
+        grid-template-columns: 80px 1fr 200px 180px 160px;
+        align-items: center;
+        padding: 2rem 0;
+        border-bottom: 1px solid var(--border);
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+        gap: 2rem;
+      }
+      .class-row::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: var(--d3);
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 0;
+      }
+      .class-row:hover::before {
+        transform: translateX(0);
+      }
+      .class-row > * {
+        position: relative;
+        z-index: 1;
+      }
+      .class-row:first-child {
+        border-top: 1px solid var(--border);
+      }
+      .cr-num {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.1rem;
+        color: var(--muted);
+      }
+      .cr-name {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2rem;
+        letter-spacing: 1px;
+        transition: color 0.3s;
+      }
+      .class-row:hover .cr-name {
+        color: var(--gold);
+      }
+      .cr-day {
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .cr-time {
+        font-size: 0.85rem;
+        color: rgba(245, 240, 232, 0.6);
+        font-weight: 300;
+      }
+      .cr-tag {
+        display: inline-flex;
+        padding: 0.35rem 0.9rem;
+        border: 1px solid var(--border);
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        justify-self: end;
+        transition: all 0.3s;
+      }
+      .class-row:hover .cr-tag {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .cr-tag.hot {
+        border-color: rgba(201, 168, 76, 0.4);
+        color: var(--gold);
+        background: rgba(201, 168, 76, 0.05);
+      }
+
+      /* ── VIDEO CARDS ── */
+      .videos-section {
+        padding: 8rem 3rem;
+        max-width: 100%;
+      }
+      .videos-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .videos-header {
+        margin-bottom: 5rem;
+      }
+      .videos-header h2 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(3rem, 6vw, 5rem);
+        line-height: 0.9;
+        letter-spacing: -1px;
+      }
+      .videos-header h2 em {
+        color: var(--gold);
+        font-style: normal;
+      }
+      .videos-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 10px;
+      }
+
+      .vid-card {
+        position: relative;
+        overflow: hidden;
+        background: var(--d3);
+        cursor: none;
+      }
+      .vid-card.big {
+        grid-row: span 3;
+        aspect-ratio: 2/3;
+      }
+      .vid-card:not(.big) {
+        aspect-ratio: 4/3;
+      }
+
+      /* background image layer */
+      .vid-bg-video {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .vid-bg-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .vid-card:hover .vid-bg-video {
+        transform: scale(1.06);
+      }
+
+      /* each card gets its own photo */
+      .bg1 {
+        background-image: url("./assets/vid1.jpg");
+      }
+      .bg2 {
+        background-image: url("./assets/vid2.jpg");
+      }
+      .bg3 {
+        background-image: url("./assets/vid3.jpg");
+      }
+      .bg4 {
+        background-image: url("./assets/vid4.jpg");
+      }
+      .bg5 {
+        background-image: url("./assets/vid5.jpg");
+      }
+
+      /* dark gradient so text/play button stays legible */
+      .vid-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(8, 8, 8, 0.85) 0%,
+          rgba(8, 8, 8, 0.2) 55%,
+          transparent 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      }
+      .vid-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1.5rem;
+        z-index: 2;
+      }
+      .vid-num-big {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 8rem;
+        color: rgba(201, 168, 76, 0.06);
+        line-height: 1;
+        position: absolute;
+        bottom: 4rem;
+        right: 1rem;
+      }
+      .vid-bottom {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        position: relative;
+        z-index: 2;
+      }
+      .vid-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.6rem;
+        letter-spacing: 1px;
+        line-height: 1.1;
+      }
+      .vid-play {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        border: 1px solid var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gold);
+        font-size: 0.9rem;
+        transition: all 0.3s;
+        flex-shrink: 0;
+      }
+      .vid-card:hover .vid-play {
+        background: var(--gold);
+        color: var(--dark);
+      }
+      .vid-label {
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .social-row {
+        display: flex;
+        gap: 1px;
+        margin-top: 2px;
+      }
+      .soc-card {
+        flex: 1;
+        background: var(--d3);
+        padding: 1.5rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: background 0.3s;
+        cursor: none;
+      }
+      .soc-card:hover {
+        background: var(--d4);
+      }
+      .soc-name {
+        font-size: 0.7rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      .soc-arr {
+        color: var(--gold);
+        font-size: 1rem;
+        transition: transform 0.3s;
+      }
+      .soc-card:hover .soc-arr {
+        transform: translate(3px, -3px);
+      }
+
+      /* TESTIMONIALS */
+      .testi-section {
+        padding: 8rem 3rem;
+        background: var(--d2);
+      }
+      .testi-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .testi-header {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 5rem;
+        align-items: start;
+        margin-bottom: 5rem;
+      }
+      .testi-header h2 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(3rem, 5vw, 4.5rem);
+        line-height: 0.9;
+        letter-spacing: -1px;
+      }
+      .testi-header h2 em {
+        color: var(--gold);
+        font-style: normal;
+      }
+      .testi-intro {
+        color: rgba(245, 240, 232, 0.35);
+        font-size: 0.95rem;
+        line-height: 1.9;
+        font-weight: 300;
+        padding-top: 1.5rem;
+      }
+      .testi-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2px;
+      }
+      .tc {
+        background: var(--d3);
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: background 0.3s;
+      }
+      .tc:hover {
+        background: var(--d4);
+      }
+      .tc-quote {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 7rem;
+        color: rgba(201, 168, 76, 0.08);
+        position: absolute;
+        top: -1rem;
+        right: 1.5rem;
+        line-height: 1;
+      }
+      .tc-stars {
+        display: flex;
+        gap: 3px;
+        margin-bottom: 1.5rem;
+      }
+      .star {
+        width: 10px;
+        height: 10px;
+        background: var(--gold);
+        clip-path: polygon(
+          50% 0%,
+          61% 35%,
+          98% 35%,
+          68% 57%,
+          79% 91%,
+          50% 70%,
+          21% 91%,
+          32% 57%,
+          2% 35%,
+          39% 35%
+        );
+      }
+      .tc-text {
+        font-size: 0.9rem;
+        color: rgba(245, 240, 232, 0.5);
+        line-height: 1.9;
+        margin-bottom: 2rem;
+        font-weight: 300;
+        position: relative;
+        z-index: 1;
+      }
+      .tc-author {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        border-top: 1px solid var(--border);
+        padding-top: 1.5rem;
+      }
+      .tc-av {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(201, 168, 76, 0.15);
+        border: 1px solid var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--gold);
+        flex-shrink: 0;
+      }
+      .tc-name {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .tc-role {
+        font-size: 0.65rem;
+        color: var(--muted);
+        letter-spacing: 1px;
+      }
+
+      /* CONTACT */
+      .contact-section {
+        padding: 8rem 3rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .contact-section::before {
+        content: "";
+        position: absolute;
+        top: -200px;
+        right: -200px;
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(
+          circle,
+          rgba(178, 34, 34, 0.08) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+      .contact-inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8rem;
+      }
+      .contact-left h2 {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(3rem, 5vw, 4.5rem);
+        line-height: 0.9;
+        letter-spacing: -1px;
+        margin-bottom: 2rem;
+      }
+      .contact-left h2 em {
+        color: var(--gold);
+        font-style: normal;
+      }
+      .contact-left p {
+        font-size: 0.95rem;
+        color: rgba(245, 240, 232, 0.35);
+        line-height: 1.9;
+        font-weight: 300;
+        margin-bottom: 3rem;
+      }
+      .offer-box {
+        background: var(--d3);
+        border: 1px solid var(--border);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+      }
+      .offer-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--gold);
+      }
+      .offer-label {
+        font-size: 0.6rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 0.5rem;
+      }
+      .offer-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.2rem;
+        letter-spacing: 1px;
+        margin-bottom: 0.25rem;
+      }
+      .offer-sub {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+      .form-field {
+        margin-bottom: 1.5rem;
+      }
+      .form-field label {
+        display: block;
+        font-size: 0.6rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.6rem;
+      }
+      .form-field input,
+      .form-field select,
+      .form-field textarea {
+        width: 100%;
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 0.95rem;
+        font-weight: 300;
+        padding: 0.75rem 0;
+        outline: none;
+        transition: border-color 0.3s;
+        -webkit-appearance: none;
+      }
+      .form-field input:focus,
+      .form-field select:focus,
+      .form-field textarea:focus {
+        border-color: var(--gold);
+      }
+      .form-field select option {
+        background: var(--d3);
+      }
+      .form-field textarea {
+        resize: none;
+        height: 80px;
+      }
+      .submit-btn {
+        width: 100%;
+        background: var(--gold);
+        color: var(--dark);
+        font-family: "Inter", sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        font-weight: 700;
+        padding: 1.1rem;
+        border: none;
+        cursor: none;
+        margin-top: 1rem;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+      }
+      .submit-btn:hover {
+        background: var(--gold2);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .f-logo {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.4rem;
+        letter-spacing: 4px;
+        color: var(--gold);
+      }
+      .f-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+      }
+      .f-links a {
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        transition: color 0.3s;
+      }
+      .f-links a:hover {
+        color: var(--gold);
+      }
+      .f-copy {
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        color: var(--muted);
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      @media (max-width: 900px) {
+        .about {
+          grid-template-columns: 1fr;
+          padding: 5rem 1.5rem;
+        }
+        .about-left {
+          border-right: none;
+          padding-right: 0;
+          border-bottom: 1px solid var(--border);
+          padding-bottom: 3rem;
+        }
+        .about-right {
+          padding-left: 0;
+          padding-top: 3rem;
+        }
+        nav .nav-links {
+          display: none;
+        }
+        .class-row {
+          grid-template-columns: 1fr auto;
+          grid-template-rows: auto auto;
+        }
+        .cr-num,
+        .cr-time {
+          display: none;
+        }
+        .videos-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+        }
+        .vid-card.big {
+          grid-row: span 1;
+          aspect-ratio: 16/9;
+        }
+        .testi-grid {
+          grid-template-columns: 1fr;
+        }
+        .contact-inner {
+          grid-template-columns: 1fr;
+        }
+        footer {
+          flex-direction: column;
+          gap: 1.5rem;
+          text-align: center;
+          padding: 2rem;
+        }
+        .hero-stats-bar {
+          flex-direction: column;
+        }
+        .stat-cell {
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
+        .stat-cell:last-child {
+          border-bottom: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+
+    <nav>
+      <div class="nav-logo">
+        <img src="./assets/logo.png" alt="" width="60" />
+      </div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#classes">Schedule</a></li>
+        <li><a href="#videos">Work</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#contact" class="nav-cta">Book Session</a>
+    </nav>
+
+    <section class="hero">
+      <video class="hero-video" autoplay muted loop playsinline>
+        <source src="./video/bg.mp4" type="video/mp4" />
+      </video>
+      <div class="hero-bg">
+        <div class="hero-circle hc1"></div>
+        <div class="hero-circle hc2"></div>
+      </div>
+      <div class="hero-line hl1"></div>
+      <div class="hero-line hl2"></div>
+      <div class="hero-line hl3"></div>
+      <div class="hero-line hl4"></div>
+      <div class="hero-big-text">BBX</div>
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <div class="eyebrow-line"></div>
+          <div class="eyebrow-text">Bad Boy Boxing · Est. 2014</div>
+        </div>
+        <h1>STEP INTO THE <br /><em>RING</em></h1>
+        <p class="hero-desc">
+          Elite coaching for all levels. From your first jab to your first
+          fight. We build real boxers.
+        </p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn-gold">Book a Session <span>→</span></a>
+          <a href="#videos" class="btn-ghost-text"
+            >Watch the work <span class="arrow-icon">↗</span></a
+          >
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <div class="scroll-line"></div>
+        <div class="scroll-text">Scroll</div>
+      </div>
+    </section>
+
+    <div class="hero-stats-bar">
+      <div class="stat-cell">
+        <div class="s-num">10+</div>
+        <div class="s-label">Years Coaching</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-num">50+</div>
+        <div class="s-label">Athletes Trained</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-num">7</div>
+        <div class="s-label">Days a Week</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-num">All</div>
+        <div class="s-label">Skill Levels</div>
+      </div>
+    </div>
+
+    <div class="marquee-wrap">
+      <div class="marquee-track">
+        <div class="marquee-item">
+          Boxing Fundamentals <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Youth Amateur <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Kids Boxing <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Pivotal Amateur Class <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Open Gym <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Bad Boy Boxing <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Boxing Fundamentals <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Youth Amateur <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Kids Boxing <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Pivotal Amateur Class <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Open Gym <span class="marquee-dot"></span>
+        </div>
+        <div class="marquee-item">
+          Bad Boy Boxing <span class="marquee-dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <section class="about" id="about">
+      <div class="about-left">
+        <div class="label-tag">
+          <div class="label-tag-line"></div>
+          <div class="label-tag-text">The Coach</div>
+        </div>
+        <h2>Forged In The<br /><em>Ring</em></h2>
+        <p>
+          Bad Boy Boxing is built on discipline, dedication, and a relentless
+          passion for the sweet science. Over a decade in the sport — as a
+          fighter, a student, and a coach.
+        </p>
+        <p>
+          Every session is deliberate. Every drill has purpose. Whether you're
+          stepping into a gym for the first time or preparing for your next
+          amateur bout — you'll be pushed to grow.
+        </p>
+      </div>
+      <div class="about-right">
+        <div class="about-visual-block">
+          <!-- avb-bg is now a background-image, no img tag needed -->
+          <div class="avb-bg"></div>
+          <div class="avb-label">
+            <div>
+              <div class="avb-name">Bad Boy Boxing</div>
+              <div class="avb-title">Head Coach · Professional Trainer</div>
+            </div>
+          </div>
+        </div>
+        <div class="credentials">
+          <div class="cred-item">
+            <div class="cred-num">10+</div>
+            <div class="cred-text">Years Coaching</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-num">500+</div>
+            <div class="cred-text">Students Trained</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-num">7</div>
+            <div class="cred-text">Days Weekly</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-num">All</div>
+            <div class="cred-text">Skill Levels</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="classes-section" id="classes">
+      <div class="classes-inner">
+        <div class="classes-header">
+          <div class="classes-header-left">
+            <div class="label-tag" style="margin-bottom: 1rem">
+              <div class="label-tag-line"></div>
+              <div class="label-tag-text">Weekly Schedule</div>
+            </div>
+            <h2>Find Your <br /><em>Class</em></h2>
+          </div>
+          <a href="#contact" class="btn-gold" style="align-self: flex-end"
+            >Reserve a Spot →</a
+          >
+        </div>
+        <div class="classes-list">
+          <div class="class-row">
+            <div class="cr-num">01</div>
+            <div class="cr-name">Boxing Fundamentals</div>
+            <div class="cr-day">Monday</div>
+            <div class="cr-time">5:30 PM</div>
+            <div class="cr-tag">All Levels</div>
+          </div>
+          <div class="class-row">
+            <div class="cr-num">02</div>
+            <div class="cr-name">Youth Amateur Boxing</div>
+            <div class="cr-day">Tuesday</div>
+            <div class="cr-time">5:30 PM</div>
+            <div class="cr-tag">Youth</div>
+          </div>
+          <div class="class-row">
+            <div class="cr-num">03</div>
+            <div class="cr-name">Boxing Fundamentals</div>
+            <div class="cr-day">Wednesday</div>
+            <div class="cr-time">5:30 PM</div>
+            <div class="cr-tag">All Levels</div>
+          </div>
+          <div class="class-row">
+            <div class="cr-num">04</div>
+            <div class="cr-name">Kids Boxing</div>
+            <div class="cr-day">Thursday</div>
+            <div class="cr-time">4:00 PM</div>
+            <div class="cr-tag">Kids</div>
+          </div>
+          <div class="class-row">
+            <div class="cr-num">05</div>
+            <div class="cr-name">Youth Amateur Boxing</div>
+            <div class="cr-day">Thursday</div>
+            <div class="cr-time">5:30 PM</div>
+            <div class="cr-tag">Youth</div>
+          </div>
+          <div class="class-row">
+            <div class="cr-num">06</div>
+            <div class="cr-name">Pivotal Amateur Class</div>
+            <div class="cr-day">Friday · Bad Boy Boxing</div>
+            <div class="cr-time">7:00 PM</div>
+            <div class="cr-tag hot">Featured</div>
+          </div>
+          <div class="class-row">
+            <div class="cr-num">07</div>
+            <div class="cr-name">Open Gym</div>
+            <div class="cr-day">Saturday</div>
+            <div class="cr-time">1:00–3:00 PM</div>
+            <div class="cr-tag">Open</div>
+          </div>
+          <div class="class-row">
+            <div class="cr-num">08</div>
+            <div class="cr-name">Boxing Fundamentals</div>
+            <div class="cr-day">Sunday</div>
+            <div class="cr-time">9:45 AM</div>
+            <div class="cr-tag">All Levels</div>
+          </div>
+          <div class="class-row">
+            <div class="cr-num">09</div>
+            <div class="cr-name">Youth Amateur Boxing</div>
+            <div class="cr-day">Sunday</div>
+            <div class="cr-time">11:00 AM</div>
+            <div class="cr-tag">Youth</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="videos-section" id="videos">
+      <div class="videos-inner">
+        <div class="videos-header">
+          <div class="label-tag" style="margin-bottom: 1rem">
+            <div class="label-tag-line"></div>
+            <div class="label-tag-text">The Work</div>
+          </div>
+          <h2>Real Training. <em>Real</em> <br /><em>Results.</em></h2>
+        </div>
+        <div class="videos-grid">
+          <!-- bg1–bg5 now use background-image, not gradient -->
+          <div class="vid-card big">
+            <div class="vid-bg-video bg1">
+              <video class="hero-video" autoplay muted loop playsinline>
+                <source src="./video/Vid2.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="vid-num-big">01</div>
+            <div class="vid-overlay">
+              <div class="vid-label">Latest Drop</div>
+              <div class="vid-bottom">
+                <div>
+                  <div class="vid-title">Pad Work<br />Session</div>
+                </div>
+                <div class="vid-play">▶</div>
+              </div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-bg-video bg2">
+              <video class="hero-video" autoplay muted loop playsinline>
+                <source src="./video/Vid1.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="vid-overlay">
+              <div class="vid-label">Youth Class</div>
+              <div class="vid-bottom">
+                <div class="vid-title">Amateur<br />Training</div>
+                <div class="vid-play">▶</div>
+              </div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-bg-video bg3">
+              <video class="hero-video" autoplay muted loop playsinline>
+                <source src="./video/Vid1.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="vid-overlay">
+              <div class="vid-label">Friday Session</div>
+              <div class="vid-bottom">
+                <div class="vid-title">Pivotal<br />Class</div>
+                <div class="vid-play">▶</div>
+              </div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-bg-video bg4">
+              <video class="hero-video" autoplay muted loop playsinline>
+                <source src="./video/Vid1.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="vid-overlay">
+              <div class="vid-label">Open Gym</div>
+              <div class="vid-bottom">
+                <div class="vid-title">Saturday<br />Session</div>
+                <div class="vid-play">▶</div>
+              </div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-bg-video bg5">
+              <video class="hero-video" autoplay muted loop playsinline>
+                <source src="./video/Vid1.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="vid-overlay">
+              <div class="vid-label">Kids Program</div>
+              <div class="vid-bottom">
+                <div class="vid-title">Next Gen<br />Fighters</div>
+                <div class="vid-play">▶</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="vid-card">
+            <div class="vid-bg-video bg5">
+              <video class="hero-video" autoplay muted loop playsinline>
+                <source src="./video/Vid1.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="vid-overlay">
+              <div class="vid-label">Kids Program</div>
+              <div class="vid-bottom">
+                <div class="vid-title">Next Gen<br />Fighters</div>
+                <div class="vid-play">▶</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="vid-card">
+            <div class="vid-bg-video bg5">
+              <video class="hero-video" autoplay muted loop playsinline>
+                <source src="./video/Vid1.mp4" type="video/mp4" />
+              </video>
+            </div>
+            <div class="vid-overlay">
+              <div class="vid-label">Kids Program</div>
+              <div class="vid-bottom">
+                <div class="vid-title">Next Gen<br />Fighters</div>
+                <div class="vid-play">▶</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="social-row">
+          <a href="#" class="soc-card"
+            ><div class="soc-name">Instagram</div>
+            <div class="soc-arr">↗</div></a
+          >
+          <a href="#" class="soc-card"
+            ><div class="soc-name">YouTube</div>
+            <div class="soc-arr">↗</div></a
+          >
+          <a href="#" class="soc-card"
+            ><div class="soc-name">TikTok</div>
+            <div class="soc-arr">↗</div></a
+          >
+          <a href="#" class="soc-card"
+            ><div class="soc-name">Facebook</div>
+            <div class="soc-arr">↗</div></a
+          >
+        </div>
+      </div>
+    </section>
+
+    <section class="testi-section" id="testimonials">
+      <div class="testi-inner">
+        <div class="testi-header">
+          <div>
+            <div class="label-tag" style="margin-bottom: 1rem">
+              <div class="label-tag-line"></div>
+              <div class="label-tag-text">Reviews</div>
+            </div>
+            <h2>What They<br /><em>Say</em></h2>
+          </div>
+          <div class="testi-intro">
+            Results speak louder than words — but here's what students and
+            parents have to say after training with Bad Boy Boxing.
+          </div>
+        </div>
+        <div class="testi-grid">
+          <div class="tc">
+            <div class="tc-quote">"</div>
+            <div class="tc-stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <p class="tc-text">
+              Started with zero boxing experience and within months I was
+              sparring confidently. The coaching style is firm but incredibly
+              encouraging. Best decision I've made.
+            </p>
+            <div class="tc-author">
+              <div class="tc-av">JM</div>
+              <div>
+                <div class="tc-name">James M.</div>
+                <div class="tc-role">Fundamentals Student</div>
+              </div>
+            </div>
+          </div>
+          <div class="tc">
+            <div class="tc-quote">"</div>
+            <div class="tc-stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <p class="tc-text">
+              My son has been doing Kids Boxing for 6 months. The change in his
+              confidence and discipline is unreal. He wakes up excited on
+              Thursday mornings now!
+            </p>
+            <div class="tc-author">
+              <div class="tc-av">SK</div>
+              <div>
+                <div class="tc-name">Sarah K.</div>
+                <div class="tc-role">Parent · Kids Boxing</div>
+              </div>
+            </div>
+          </div>
+          <div class="tc">
+            <div class="tc-quote">"</div>
+            <div class="tc-stars">
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+              <div class="star"></div>
+            </div>
+            <p class="tc-text">
+              The Friday Pivotal Amateur Class is elite. You get pushed to your
+              absolute limit and come out sharper every single time. Can't
+              recommend it enough.
+            </p>
+            <div class="tc-author">
+              <div class="tc-av">TR</div>
+              <div>
+                <div class="tc-name">Ty R.</div>
+                <div class="tc-role">Amateur Competitor</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+      <div class="contact-inner">
+        <div class="contact-left">
+          <div class="label-tag" style="margin-bottom: 1.5rem">
+            <div class="label-tag-line"></div>
+            <div class="label-tag-text">Book Now</div>
+          </div>
+          <h2>Ready To Start<br /><em>Training?</em></h2>
+          <p>
+            No experience needed. Just show up ready to work. Reach out and
+            let's find the right class for you.
+          </p>
+          <div class="offer-box">
+            <div class="offer-label">First Session</div>
+            <div class="offer-title">Come Try a Class</div>
+            <div class="offer-sub">All levels welcome — just show up</div>
+          </div>
+        </div>
+        <div class="contact-right">
+          <div class="form-field">
+            <label>Your Name</label
+            ><input type="text" placeholder="John Smith" />
+          </div>
+          <div class="form-field">
+            <label>Phone / Email</label
+            ><input type="text" placeholder="How should we reach you?" />
+          </div>
+          <div class="form-field">
+            <label>Class You're Interested In</label
+            ><select>
+              <option>Boxing Fundamentals</option>
+              <option>Youth Amateur Boxing</option>
+              <option>Kids Boxing</option>
+              <option>Pivotal Amateur Class (Friday)</option>
+              <option>Open Gym (Saturday)</option>
+              <option>Not sure yet</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Message</label
+            ><textarea placeholder="Any questions or details..."></textarea>
+          </div>
+          <button
+            class="submit-btn"
+            onclick="
+              this.textContent = 'Message Sent ✓';
+              this.style.background = '#3a6b2a';
+              this.style.color = '#fff';
+            "
+          >
+            Send Message →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="f-logo">Bad Boy Boxing</div>
+      <ul class="f-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#classes">Schedule</a></li>
+        <li><a href="#videos">Work</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="f-copy">© 2026 Bad Boy Boxing</div>
+    </footer>
+
+    <script>
+      const cur = document.getElementById("cursor"),
+        ring = document.getElementById("cursor-ring");
+      let mx = 0,
+        my = 0,
+        rx = 0,
+        ry = 0;
+      document.addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+        cur.style.left = mx + "px";
+        cur.style.top = my + "px";
+      });
+      function lerpRing() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+        requestAnimationFrame(lerpRing);
+      }
+      lerpRing();
+      document
+        .querySelectorAll("a,button,.vid-card,.class-row,.soc-card")
+        .forEach((el) => {
+          el.addEventListener("mouseenter", () => {
+            cur.style.width = "14px";
+            cur.style.height = "14px";
+            ring.style.width = "70px";
+            ring.style.height = "70px";
+          });
+          el.addEventListener("mouseleave", () => {
+            cur.style.width = "10px";
+            cur.style.height = "10px";
+            ring.style.width = "48px";
+            ring.style.height = "48px";
+          });
+        });
+    </script>
+  </body>
+</html>
